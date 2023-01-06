@@ -1,21 +1,19 @@
-INSERT INTO departments (deparment_name)
+INSERT INTO department (deparment_name)
 VALUES 
 ('Operations'),
 ('HR'),
 ('Sales'),
 ('Marketing');
---see notebook for last department
 
 INSERT INTO roles (title, salary, deparment_id)
 VALUES
 ('Sales Manager', 300000, 1),
-('Investment Specialist Administrative Assistant', 55000, 1),
+('Administrative Assistant', 55000, 1),
 ('Investment Specialist', 250000, 3),
 ('HR Manager', 90000, 2),
 ('Recruitment', 60000, 2),
 ('Marketing Director', 120000, 4),
-('Marketing Consultant', 70000,4);
---add the rest from notebook
+('Marketing Consultant', 70000, 4);
 
 INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES

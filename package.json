@@ -1,20 +1,19 @@
-
-
 {
     "name": "static-site",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "server.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1", 
+        "test": "echo \"Error: no test specified\" && exit 1",
         "watch": "nodemon server.js"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "console.table": "^0.10.0",
+        "ctable": "^0.0.3",
+        "express": "^4.17.1",
         "inquirer": "8.2.4",
-        "mysql2": "^2.2.5",
-        "express":"^4.17.1",
-        "console.table": "^0.10.0"
+        "mysql2": "^2.2.5"
     }
 }

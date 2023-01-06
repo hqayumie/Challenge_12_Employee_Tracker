@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const db = require('./db/connections')
+const cTable = require('console.table')
 
 const PORT = process.env.PORT || 3001;
 
@@ -33,29 +34,30 @@ const options = () => {
             "Quit",
         ],
 
-    });
-    switch (choice) {
-        case 'View all departments':
-            viewAllDepartments();
-            break;
-        case 'View all roles':
-            viewAllRoles();
-            break;
-        case 'View all employees':
-            viewAllEmployees();
-            break;
-        case 'Add a department':
-            addDepartment();
-            break;
-        case 'Add a role':
-            addRole();
-            break;
-        case 'Add an employee':
-            addEmployee();
-            break;
-            case 'Exit':
-                process.exit();
-    }
+    }).then((res) => {
+        switch (res.choice) {
+            case 'View all departments':
+                allDepartments();
+                break;
+            case 'View all roles':
+                allRoles();
+                break;
+            case 'View all employees':
+                allEmployees();
+                break;
+            case 'Add a department':
+                addNewDepartment();
+                break;
+            case 'Add a role':
+                addNewRole();
+                break;
+            case 'Add an employee':
+                addNewEmployee();
+                break;
+                case 'Exit':
+                    process.exit();
+        }
+    })
 
 }
 
@@ -63,10 +65,10 @@ const options = () => {
 
 function allDepartments() {
     var query = 'SELECT * FROM department';
-    Connection.query(query, function(err, res){
+    db.query(query, function(err, res){
         if(err)throw err;
         console.log (res.length + 'departments found!');
-        console.table('All Departments:', res);
+        console.table(res)
         options();
     })
 };
@@ -74,10 +76,10 @@ function allDepartments() {
 //view all roles in the database
 function allRoles() {
     var query= 'SELECT * FROM roles';
-    Connection.query(query, function(err, res){
+    db.query(query, function(err, res){
         if(err) throw err;
         console.log (res.length + 'roles found!');
-        console.table('All Roles:', res);
+        console.table(res);
         options();
     })
 };
@@ -85,10 +87,11 @@ function allRoles() {
 //view all employees in the database
 function allEmployees() {
     var query= 'SELECT * FROM employees';
-    Connection.query(query, function(err, res){
+    db.query(query, function(err, res){
         if(err) throw err;
         console.log (res.length + 'employees found!');
-        console.table('All Employees:', res);
+        console.table(res);
+       
         options();
     })
 };
@@ -103,10 +106,10 @@ const addNewDepartment = () => {
       }
     ];
   
-    inquier.prompt(questions)
+    inquirer.prompt(questions)
     .then(response => {
       const query = `INSERT INTO department (name) VALUES (?)`;
-      connection.query(query, [response.name], (err, res) => {
+      db.query(query, [response.name], (err, res) => {
         if (err) throw err;
         console.log(`Successfully inserted ${response.name} department at id ${res.insertId}`);
         options();
@@ -121,7 +124,7 @@ const addNewDepartment = () => {
   const addNewRole = () => {
     
     const departments = [];
-    connection.query("SELECT * FROM DEPARTMENT", (err, res) => {
+    db.query("SELECT * FROM DEPARTMENT", (err, res) => {
       if (err) throw err;
   
       res.forEach(dep => {
@@ -155,7 +158,7 @@ const addNewDepartment = () => {
       inquier.prompt(questions)
       .then(response => {
         const query = `INSERT INTO ROLES (title, salary, department_id) VALUES (?)`;
-        connection.query(query, [[response.title, response.salary, response.department]], (err, res) => {
+        db.query(query, [[response.title, response.salary, response.department]], (err, res) => {
           if (err) throw err;
           console.log(`Successfully inserted ${response.title} role at id ${res.insertId}`);
           options();
@@ -170,7 +173,7 @@ const addNewDepartment = () => {
 
   const addNewEmployee = () => {
     //get all the employee list to make choice of employee's manager
-    connection.query("SELECT * FROM EMPLOYEES", (err, res) => {
+    db.query("SELECT * FROM EMPLOYEES", (err, res) => {
       if (err) throw err;
       const employeeSelection = [
         {
@@ -186,7 +189,7 @@ const addNewDepartment = () => {
       });
       
       //get all the role list to make choice of employee's role
-      connection.query("SELECT * FROM ROLES", (err, res) => {
+      db.query("SELECT * FROM ROLES", (err, res) => {
         if (err) throw err;
         const roleSelection = [];
         res.forEach(({ title, id }) => {
@@ -221,11 +224,11 @@ const addNewDepartment = () => {
           }
         ]
     
-        inquier.prompt(questions)
+        inquirer.prompt(questions)
           .then(response => {
             const query = `INSERT INTO EMPLOYEES (first_name, last_name, role_id, manager_id) VALUES (?)`;
             let manager_id = response.manager_id !== 0? response.manager_id: null;
-            connection.query(query, [[response.first_name, response.last_name, response.role_id, manager_id]], (err, res) => {
+            db.query(query, [[response.first_name, response.last_name, response.role_id, manager_id]], (err, res) => {
               if (err) throw err;
               console.log(`successfully inserted employee ${response.first_name} ${response.last_name} with id ${res.insertId}`);
               options();
@@ -242,7 +245,7 @@ const addNewDepartment = () => {
 
   const updateRole = () => {
     //get all the employees list 
-    connection.query("SELECT * FROM EMPLOYEES", (err, res) => {
+    db.query("SELECT * FROM EMPLOYEES", (err, res) => {
       if (err) throw err;
       const employeeSelection = [];
       res.forEach(({ first_name, last_name, id }) => {
@@ -253,7 +256,7 @@ const addNewDepartment = () => {
       });
       
       //get all the roles to choose the employee's role
-      connection.query("SELECT * FROM ROLE", (err, res) => {
+      db.query("SELECT * FROM ROLE", (err, res) => {
         if (err) throw err;
         const roleSelection = [];
         res.forEach(({ title, id }) => {
@@ -278,10 +281,10 @@ const addNewDepartment = () => {
           }
         ]
     
-        inquier.prompt(questions)
+        inquirer.prompt(questions)
           .then(response => {
             const query = `UPDATE EMPLOYEE SET ? WHERE ?? = ?;`;
-            connection.query(query, [
+            db.query(query, [
               {role_id: response.role_id},
               "id",
               response.id
@@ -298,3 +301,5 @@ const addNewDepartment = () => {
         })
     });
   }
+
+  options()
