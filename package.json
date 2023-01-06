@@ -12,9 +12,9 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "console.table": "^0.10.0",
         "inquirer": "8.2.4",
         "mysql2": "^2.2.5",
-        "nodemon": "^2.0.20"
+        "express":"^4.17.1",
+        "console.table": "^0.10.0"
     }
 }
