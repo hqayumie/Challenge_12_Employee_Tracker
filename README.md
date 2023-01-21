@@ -9,3 +9,4 @@ A command line application that can help you manage a company's employee databas
 The following dependancies must be installed to run the application properly: Inquirer, SQL and Express.JS
 
 ## Walkthrough Video
+<a href ="https://drive.google.com/file/d/1G_tUetixRam3BCxJjUHJwQc00yTm7w6j/view" target="_blank">Video
